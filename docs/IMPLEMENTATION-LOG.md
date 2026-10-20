@@ -24,3 +24,9 @@
 - 發現教學關閉後焦點落到 body，新增瀏覽器失敗測試後改回工作日誌，RED→GREEN。
 - 檢視 1440 與 390 截圖，修正手機指標換行。場景改為狀態變動時繪製，降低閒置 GPU 負擔。
 - Ruling: Node 20 Windows 不展開測試 glob，改用 scripts/test.mjs 列舉檔案 — 保留 npm test 介面 — 代價為新增一個小型啟動腳本。
+
+## Task 5（發布前）
+- 建構 RED: build.mjs 尚未建立。GREEN: 26/26 單元測試、13/13 瀏覽器測試、dist 子路徑 2/2 測試通過。
+- 已保存桌機與手機截圖；重要文字對比介於 5.04:1 至 11.32:1。
+- Pages workflow 依官方文件使用 configure-pages v5、upload-pages-artifact v4、deploy-pages v4。
+- 尚未推送，下一步獨立審查與發布。
