@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+*.log
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+*.blend1
+.DS_Store
+Thumbs.db
