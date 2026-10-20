@@ -1,0 +1,12 @@
+{
+  "name": "sprint-after-nine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test:browser": "playwright test"
+  }
+}
