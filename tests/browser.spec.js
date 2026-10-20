@@ -52,3 +52,29 @@ for(const [width,height] of [[390,844],[768,1024],[1440,900],[844,390]]){
     await expect(page.locator('[data-task="junior-0"][data-choice="careful"]')).toBeVisible();
   });
 }
+test('3D scene and context loss preserve the playable journal',async({page})=>{
+  await start(page);
+  await expect(page.locator('#scene canvas')).toBeVisible();
+  await page.locator('#scene canvas').evaluate(c=>c.dispatchEvent(new Event('webglcontextlost',{cancelable:true})));
+  await expect(page.locator('#scene-warning')).toBeVisible();
+  await page.getByRole('button',{name:'整理成果，提早下班'}).click();
+  await page.getByRole('button',{name:'確定下班',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'帶著未完清單下班'})).toBeVisible();
+});
+test('tutorial focus, movement, blur and panel input isolation',async({page})=>{
+  await start(page);
+  await expect(page.locator('#panel')).toBeFocused();
+  await expect(page.locator('#scene')).toHaveAttribute('data-position',/.+/);
+  const initial=await page.locator('#scene').getAttribute('data-position');
+  await page.keyboard.down('d');
+  await expect.poll(()=>page.locator('#scene').getAttribute('data-position')).not.toBe(initial);
+  await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
+  const stopped=await page.locator('#scene').getAttribute('data-position');
+  await page.waitForTimeout(150);
+  expect(await page.locator('#scene').getAttribute('data-position')).toBe(stopped);
+  await page.keyboard.up('d');
+  await page.locator('[data-station="whiteboard"]').click();
+  const opened=await page.locator('#scene').getAttribute('data-position');
+  await page.keyboard.down('d');await page.waitForTimeout(150);await page.keyboard.up('d');
+  expect(await page.locator('#scene').getAttribute('data-position')).toBe(opened);
+});

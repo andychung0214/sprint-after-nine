@@ -18,3 +18,9 @@
 ## Task 3
 - RED: 空頁缺少角色按鈕，瀏覽器流程失敗。GREEN: 8/8 Chromium 流程通過，含三職級 18:00 結算及四尺寸。
 - Ruling: 先安裝固定版本 three.js 與 Playwright，場景於 Task 4 實作 — 依賴安裝合併減少等待 — 無產品行為影響。
+
+## Task 4
+- RED: 移動模組與 3D canvas 缺失。GREEN: 移動測試、WebGL context loss 及鍵盤移動／失焦測試通過。
+- 發現教學關閉後焦點落到 body，新增瀏覽器失敗測試後改回工作日誌，RED→GREEN。
+- 檢視 1440 與 390 截圖，修正手機指標換行。場景改為狀態變動時繪製，降低閒置 GPU 負擔。
+- Ruling: Node 20 Windows 不展開測試 glob，改用 scripts/test.mjs 列舉檔案 — 保留 npm test 介面 — 代價為新增一個小型啟動腳本。

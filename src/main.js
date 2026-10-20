@@ -10,7 +10,7 @@ const modal=document.querySelector('#modal');
 let returnFocus=null,returnId=null;
 function closeModal(){
   modal.close();u.paused=false;sync();
-  const target=(returnId&&document.getElementById(returnId))||(returnFocus?.isConnected?returnFocus:null)||document.querySelector('#panel');
+  const target=(returnId&&document.getElementById(returnId))||(returnFocus?.isConnected&&returnFocus!==document.body?returnFocus:null)||document.querySelector('#panel');
   target.focus({preventScroll:true});
 }
 function showModal(title,text,buttons){
