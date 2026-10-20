@@ -15,3 +15,8 @@ test('three distinct role chains and six complete events',()=>{
   assert.equal(Object.keys(TRACKS).length,3);
   assert.deepEqual(MEETINGS.map(m=>[m.at,m.minutes]),[[570,15],[660,30],[900,30]]);
 });
+test('roles have genuinely different time and resource tradeoffs',()=>{
+  const profiles=Object.values(TASKS).map(tasks=>JSON.stringify(tasks.map(t=>t.choices.map(c=>[c.minutes,c.effects]))));
+  assert.equal(new Set(profiles).size,3);
+  assert.ok(TASKS.senior.some(t=>t.choices.some(c=>c.minutes===45)));
+});

@@ -18,7 +18,7 @@ for(const [role,track] of [['junior','frontend'],['senior','backend'],['manager'
       if(s.pendingEvent){await page.locator('[data-event-careful]').click();continue;}
       const task=TASKS[role].find(t=>!s.completedTasks.includes(t.id));
       const next=MEETINGS.find(m=>!s.meetings[m.id]&&m.at>s.minute);
-      if(task&&(!next||s.minute+30<=next.at)){
+      if(task&&(!next||s.minute+task.choices.find(c=>c.id==='careful').minutes<=next.at)){
         await page.locator(`[data-station="${task.stationId}"]`).click();
         await page.locator(`[data-task="${task.id}"][data-choice="careful"]`).click();
       }else{
@@ -119,4 +119,21 @@ test('touch stations and reduced motion',async({browser})=>{
   await page.setViewportSize({width:844,height:390});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await context.close();
+});
+test('resize clears held keys until a fresh keydown',async({page})=>{
+  await start(page);await expect(page.locator('#scene')).toHaveAttribute('data-position',/.+/);
+  await page.keyboard.down('d');
+  await expect.poll(()=>page.locator('#scene').getAttribute('data-position')).not.toBe('0.000,0.100');
+  await page.setViewportSize({width:1400,height:900});
+  await page.waitForTimeout(150);
+  const stopped=await page.locator('#scene').getAttribute('data-position');
+  await page.evaluate(()=>document.querySelector('#panel').dispatchEvent(new KeyboardEvent('keydown',{key:'d',repeat:true,bubbles:true})));
+  await page.waitForTimeout(150);
+  expect(await page.locator('#scene').getAttribute('data-position')).toBe(stopped);
+  await page.keyboard.up('d');
+});
+test('closing a station returns focus to its trigger',async({page})=>{
+  await start(page);await page.locator('[data-station="whiteboard"]').click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('[data-station="whiteboard"]')).toBeFocused();
 });

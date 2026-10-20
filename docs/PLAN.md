@@ -1,6 +1,6 @@
 # Sprint After Nine｜九點以後 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 完成可在 GitHub Pages 遊玩的三職級 3D 辦公室工作日遊戲。
 
@@ -77,15 +77,15 @@
 - 產出 `transition(state, command) -> TransitionResult`、`getEnding(state) -> {id, title, summary}`。
 - 產出 `ROLES`、`TRACKS`、`STATIONS`、`TASKS`、`EVENTS`、`MEETINGS` 內容常數供 UI 共用。
 
-- [ ] 寫核心失敗測試：起始時間 540、指標 `{progress:0, quality:65, trust:60, energy:85}`；資源上下限；18:00 後不可開新行動；相同 revision 再提交遭拒；原狀態不變。
-- [ ] 執行 `node --test tests/game-state.test.js`，預期因尚未建立核心模組而失敗，保存失敗原因。
-- [ ] 建立純狀態核心，指令包含 task、rest、lunch、meeting、event、finish；午休 720 分鐘後一次性提供，休息不增加進度。
-- [ ] 補上會議測試：09:15 開始 30 分鐘行動回傳衝突且不改狀態；09:30 阻止一般工作直到處理站會；略過確認只扣分一次；參加消耗規格時長。
-- [ ] 實作排程與六種互斥結局，按規格順序判定，精力歸零優先。
-- [ ] 寫事件與內容測試：相同 seed 的事件順序一致，六選三不重複；事件在行動結束後出現；結算後不再開啟事件。
-- [ ] 建立三職級四步工作鏈、三方向文案與六事件；固定事件門檻為 10:30、13:30、16:30，於首次越過門檻的行動結束後排入。pendingEvent 未回覆前阻止普通工作；若會議同時到點先處理會議，再回覆事件。
-- [ ] 為每個角色寫一條可達「穩定交付」的固定種子路徑，驗證最終進度 ≥80、品質 ≥65、信任 ≥50、精力 >0 且時間 ≤1080；不直接修改測試中的遊戲狀態跳過工作。
-- [ ] 執行 `node --test tests/game-state.test.js tests/content.test.js`，預期全部通過；提交 `feat: 建立工作日規則與角色任務`。
+- [x] 寫核心失敗測試：起始時間 540、指標 `{progress:0, quality:65, trust:60, energy:85}`；資源上下限；18:00 後不可開新行動；相同 revision 再提交遭拒；原狀態不變。
+- [x] 執行 `node --test tests/game-state.test.js`，預期因尚未建立核心模組而失敗，保存失敗原因。
+- [x] 建立純狀態核心，指令包含 task、rest、lunch、meeting、event、finish；午休 720 分鐘後一次性提供，休息不增加進度。
+- [x] 補上會議測試：09:15 開始 30 分鐘行動回傳衝突且不改狀態；09:30 阻止一般工作直到處理站會；略過確認只扣分一次；參加消耗規格時長。
+- [x] 實作排程與六種互斥結局，按規格順序判定，精力歸零優先。
+- [x] 寫事件與內容測試：相同 seed 的事件順序一致，六選三不重複；事件在行動結束後出現；結算後不再開啟事件。
+- [x] 建立三職級四步工作鏈、三方向文案與六事件；固定事件門檻為 10:30、13:30、16:30，於首次越過門檻的行動結束後排入。pendingEvent 未回覆前阻止普通工作；若會議同時到點先處理會議，再回覆事件。
+- [x] 為每個角色寫一條可達「穩定交付」的固定種子路徑，驗證最終進度 ≥80、品質 ≥65、信任 ≥50、精力 >0 且時間 ≤1080；不直接修改測試中的遊戲狀態跳過工作。
+- [x] 執行 `node --test tests/game-state.test.js tests/content.test.js`，預期全部通過；提交 `feat: 建立工作日規則與角色任務`。
 
 ## Task 2: 可靠存檔與復原
 
@@ -95,11 +95,11 @@
 - 使用 Task 1 的 `GameState` 與內容識別碼。
 - 產出 `validateSave(value) -> boolean`、`loadGame(storage) -> {state, warning}`、`saveGame(storage, state) -> {ok, warning}`、`clearGame(storage) -> {ok, warning}`；storage 由呼叫者注入。
 
-- [ ] 寫失敗測試：有效狀態含 pendingEvent 完整往返；非法 JSON、錯誤版本、非有限數值、未知角色、重複事件、違反依賴的 completedTasks 均拒絕。
-- [ ] 執行 `node --test tests/storage.test.js`，預期模組缺失失敗。
-- [ ] 實作版本化存檔及合法狀態檢查，固定儲存鍵 `sprint-after-nine:v1`；儲存例外回傳提示，不向呼叫者拋出。
-- [ ] 測試 getItem/setItem/removeItem 拋錯及容量不足，確認記憶體中的 GameState 不被改動；讀取失敗不自動覆寫原資料。
-- [ ] 執行 `node --test tests/storage.test.js`，預期全部通過；提交 `feat: 加入存檔驗證與異常復原`。
+- [x] 寫失敗測試：有效狀態含 pendingEvent 完整往返；非法 JSON、錯誤版本、非有限數值、未知角色、重複事件、違反依賴的 completedTasks 均拒絕。
+- [x] 執行 `node --test tests/storage.test.js`，預期模組缺失失敗。
+- [x] 實作版本化存檔及合法狀態檢查，固定儲存鍵 `sprint-after-nine:v1`；儲存例外回傳提示，不向呼叫者拋出。
+- [x] 測試 getItem/setItem/removeItem 拋錯及容量不足，確認記憶體中的 GameState 不被改動；讀取失敗不自動覆寫原資料。
+- [x] 執行 `node --test tests/storage.test.js`，預期全部通過；提交 `feat: 加入存檔驗證與異常復原`。
 
 ## Task 3: 可完整遊玩的 HTML 介面
 
@@ -111,13 +111,13 @@
 - `main.js` 持有唯一遊戲狀態；以 `expectedRevision` 提交，accepted 後保存，再重繪。
 - `uiState` 包含 `paused`、`activeStation`、`soundEnabled`、`storageWarning`、`sceneWarning`；暫停時不轉送工作指令。
 
-- [ ] 寫瀏覽器失敗測試：首頁選角進入遊戲、透過站點清單完成四步任務、看到可解釋的結算。安裝固定版本開發依賴後執行 `npx playwright test`，預期因介面未實作失敗。
-- [ ] 建立靜態伺服器及頁面：首頁、教學、工作日 HUD、站點、任務選項、會議衝突、事件、暫停與結算；所有選項提交前顯示時間與效果。
-- [ ] 套用美術規格：暖白 #F2EDE3、墨色 #25332D、森林綠 #385747、木色 #B98C62、磚紅 #AD5142；系統繁體字體、紙張邊線與印章；記錄文字對比檢查。
-- [ ] 加入鍵盤焦點回復、aria-live、原生按鈕與對話框、減少動態效果、44 像素觸控目標；手機面板以自然捲動避免遮擋操作。
-- [ ] 加入續玩、重新開始確認、提前下班、暫停與儲存失敗提示；重新開始清除舊局 UI 狀態，不清除其他網站資料。
-- [ ] 擴充瀏覽器測試：三角色、三方向、連點、Esc、Tab 焦點、重載 pendingEvent、暫停阻止操作；未完成結局不可宣稱驗證成功。
-- [ ] 執行 `npm test` 及 `npx playwright test`，預期全部通過；檢視四個指定尺寸截圖，記錄實際測試結果；提交 `feat: 建立可操作的工作日介面`。
+- [x] 寫瀏覽器失敗測試：首頁選角進入遊戲、透過站點清單完成四步任務、看到可解釋的結算。安裝固定版本開發依賴後執行 `npx playwright test`，預期因介面未實作失敗。
+- [x] 建立靜態伺服器及頁面：首頁、教學、工作日 HUD、站點、任務選項、會議衝突、事件、暫停與結算；所有選項提交前顯示時間與效果。
+- [x] 套用美術規格：暖白 #F2EDE3、墨色 #25332D、森林綠 #385747、木色 #B98C62、磚紅 #AD5142；系統繁體字體、紙張邊線與印章；記錄文字對比檢查。
+- [x] 加入鍵盤焦點回復、aria-live、原生按鈕與對話框、減少動態效果、44 像素觸控目標；手機面板以自然捲動避免遮擋操作。
+- [x] 加入續玩、重新開始確認、提前下班、暫停與儲存失敗提示；重新開始清除舊局 UI 狀態，不清除其他網站資料。
+- [x] 擴充瀏覽器測試：三角色、三方向、連點、Esc、Tab 焦點、重載 pendingEvent、暫停阻止操作；未完成結局不可宣稱驗證成功。
+- [x] 執行 `npm test` 及 `npx playwright test`，預期全部通過；檢視四個指定尺寸截圖，記錄實際測試結果；提交 `feat: 建立可操作的工作日介面`。
 
 ## Task 4: 3D 辦公室、移動與音效
 
@@ -129,13 +129,13 @@
 - `createAudio() -> {setEnabled(boolean), play(cue), dispose()}`；聲音啟用必須源自使用者操作。
 - 場景使用 Task 1 的 STATIONS；點選或靠近按 E 只送出站點識別碼，不改變 GameState。
 
-- [ ] 寫移動失敗測試：相同時間下斜向與直向速度一致、不能穿牆、delta 上限避免失焦後跳躍、停用輸入位置不變。
-- [ ] 執行 `node --test tests/movement.test.js`，預期模組缺失失敗。
-- [ ] 安裝並鎖定 three.js；以幾何模型建立桌椅、螢幕、白板、植物、人物及五站點，固定等角鏡頭，像素比例上限 1.5。
-- [ ] 實作 WASD、方向鍵、E、點站點前往與觸控方向按鈕；對話／暫停／失焦清空輸入；相機尺寸跟隨容器。
-- [ ] 補瀏覽器測試：移動後互動、開啟面板停止移動、失焦／旋轉、WebGL 初始化失敗及 context lost。預期顯示降級提示且站點清單仍能結算。
-- [ ] 實作預設關閉的短音效，Web Audio 不可用時靜音繼續；不依賴遠端音效檔案。
-- [ ] 執行 `npm test` 與 `npx playwright test`；實際檢視 3D 截圖、觸控與主控台，預期無未處理錯誤；提交 `feat: 加入立體辦公室與多裝置操作`。
+- [x] 寫移動失敗測試：相同時間下斜向與直向速度一致、不能穿牆、delta 上限避免失焦後跳躍、停用輸入位置不變。
+- [x] 執行 `node --test tests/movement.test.js`，預期模組缺失失敗。
+- [x] 安裝並鎖定 three.js；以幾何模型建立桌椅、螢幕、白板、植物、人物及五站點，固定等角鏡頭，像素比例上限 1.5。
+- [x] 實作 WASD、方向鍵、E、點站點前往與觸控方向按鈕；對話／暫停／失焦清空輸入；相機尺寸跟隨容器。
+- [x] 補瀏覽器測試：移動後互動、開啟面板停止移動、失焦／旋轉、WebGL 初始化失敗及 context lost。預期顯示降級提示且站點清單仍能結算。
+- [x] 實作預設關閉的短音效，Web Audio 不可用時靜音繼續；不依賴遠端音效檔案。
+- [x] 執行 `npm test` 與 `npx playwright test`；實際檢視 3D 截圖、觸控與主控台，預期無未處理錯誤；提交 `feat: 加入立體辦公室與多裝置操作`。
 
 ## Task 5: 文件、發布產物、審查與 GitHub Pages
 
@@ -168,4 +168,4 @@
 - 規格第 1–5 節：Task 1；第 6 節：Task 3–4；第 7 節：Task 3–4。
 - 規格第 8–9 節：Task 1–4；第 10–12 節：Task 5 與全程證據紀錄。
 - 五項 Review Focus 均已指定測試；模組函式名稱及資料欄位保持一致。
-- 目前只有設計與計畫文件完成；上方實作核取方塊尚未完成。
+- Task 1–4 已完成；Task 5 本機驗證通過，等待獨立審查與公開部署驗證。

@@ -91,3 +91,15 @@ for(const role of ['junior','senior','manager']) test(`${role}: legal successful
   assert.equal(s.minute,1080);
   assert.equal(getEnding(s).id,'steady');
 });
+test('burnout is reachable through legal choices without injecting resource values',()=>{
+  let s=game('senior');
+  for(let i=0;i<20&&s.status==='playing';i++){
+    const due=MEETINGS.find(m=>!s.meetings[m.id]&&s.minute===m.at);
+    const task=TASKS.senior.find(t=>!s.completedTasks.includes(t.id));
+    const c=due?{type:'meeting',meetingId:due.id,choiceId:'attend'}:s.pendingEvent?{type:'event',choiceId:'careful'}:task?{type:'task',actionId:task.id,choiceId:'careful'}:{type:'finish'};
+    let r=send(s,c);
+    if(!r.accepted&&r.conflicts.length)r=send(s,{...c,skipMeetingIds:r.conflicts});
+    assert.equal(r.accepted,true,r.reason);s=r.state;
+  }
+  assert.equal(getEnding(s).id,'burnout');
+});

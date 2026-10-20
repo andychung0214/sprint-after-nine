@@ -15,11 +15,16 @@ export const STATIONS = [
   {id:'test',name:'測試工作站',short:'驗證',number:'04',x:3.5,z:2,description:'「在我電腦可以」還不算完成。'},
   {id:'pantry',name:'茶水間',short:'喘口氣',number:'05',x:-4,z:-2.6,description:'咖啡不會修好錯誤，休息可能會。'}
 ];
+const workloads = {
+  junior:{minutes:[30,30,30,30],quality:8,trust:4,energy:15,quickQuality:-13,quickTrust:-4},
+  senior:{minutes:[30,45,30,30],quality:9,trust:7,energy:19,quickQuality:-16,quickTrust:-5},
+  manager:{minutes:[30,30,45,30],quality:4,trust:9,energy:16,quickQuality:-9,quickTrust:-12}
+};
 const chain = (role, rows) => rows.map(([title,stationId,body,careful,quick],i)=>({
   id:`${role}-${i}`, title, stationId, body, requires:i?[`${role}-${i-1}`]:[],
   choices:[
-    {id:'careful',label:careful,minutes:30,effects:{progress:25,quality:7,trust:5,energy:-12},result:'多花一點時間，把明天可能踩的坑先填好。'},
-    {id:'quick',label:quick,minutes:15,effects:{progress:25,quality:-13,trust:-4,energy:-9},result:'進度向前了。那些沒有確認的事，也跟著留下來。'}
+    {id:'careful',label:careful,minutes:workloads[role].minutes[i],effects:{progress:25,quality:workloads[role].quality,trust:workloads[role].trust,energy:-workloads[role].energy},result:'多花一點時間，把明天可能踩的坑先填好。'},
+    {id:'quick',label:quick,minutes:15,effects:{progress:25,quality:workloads[role].quickQuality,trust:workloads[role].quickTrust,energy:-9},result:'進度向前了。那些沒有確認的事，也跟著留下來。'}
   ]
 }));
 export const TASKS = {

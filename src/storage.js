@@ -1,4 +1,5 @@
 import {ROLES,TRACKS,TASKS,EVENTS,MEETINGS} from './content.js';
+import {EVENT_TIMES} from './game-state.js';
 const KEY='sprint-after-nine:v1';
 const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
 const text=v=>typeof v==='string'&&v.length<1000;
@@ -23,6 +24,13 @@ export function validateSave(s){
     if(s.status==='playing'&&(s.minute===1080||s.stats.energy===0))return false;
     if(!Array.isArray(s.history)||s.history.length!==s.revision||s.history.length>1000)return false;
     if(!s.history.every(h=>integer(h.minute,540,s.minute)&&text(h.title)&&text(h.choice)&&text(h.result)&&h.effects&&['progress','quality','trust','energy'].every(k=>integer(h.effects[k],-100,100))))return false;
+    const eligible=EVENT_TIMES.filter(t=>s.minute>=t).length;
+    if(s.eventIndex>eligible||(s.status==='playing'&&s.eventIndex!==eligible))return false;
+    const resolved=s.history.filter(h=>EVENTS.some(e=>e.title===h.title));
+    if(!resolved.every((h,i)=>EVENTS.find(e=>e.id===s.eventDeck[i])?.title===h.title&&h.minute>=EVENT_TIMES[i]+15))return false;
+    const unhandled=s.eventIndex-resolved.length;
+    if(s.status==='playing'&&unhandled!==(s.pendingEvent?1:0))return false;
+    if(s.status==='ended'&&(unhandled<0||unhandled>1||eligible-s.eventIndex>1))return false;
     return true;
   }catch{return false;}
 }

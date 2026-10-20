@@ -47,14 +47,14 @@ const ui=mountUI(document.querySelector('#app'),{
     sync();showModal('今天不必一口氣做完。','移動和閱讀不會推進時間。每個選擇都會顯示耗時與影響。選擇下方站點即可工作；也可以用 WASD／方向鍵移動，靠近後按 E。',[['知道了，開始工作']]);
   },
   onResume(){state=loaded.state;u.activeStation=null;u.feedback='歡迎回來。進度停在你離開的地方。';sync();},
-  onStation(id){if(!state||state.status!=='playing'||u.paused)return;u.activeStation=id;u.feedback='';sync();if(innerWidth<761)document.querySelector('#panel').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});},
+  onStation(id){if(!state||state.status!=='playing'||u.paused)return;const previous=u.activeStation;u.activeStation=id;u.feedback='';sync();if(!id&&previous)document.querySelector(`[data-station="${previous}"]`)?.focus({preventScroll:true});else document.querySelector('#panel').focus({preventScroll:true});if(innerWidth<761)document.querySelector('#panel').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});},
   onPause(){if(state)showModal('先把時間留在這裡。','休息一下。遊戲不會在背景替你做任何決定。',[['繼續工作']]);},
   onSound(){u.soundEnabled=!u.soundEnabled;audio?.setEnabled(u.soundEnabled);sync();},
   onRestart(){showModal('重新開始這一天？','目前的進度將被新的工作日取代。',[['保留目前進度'],['確定重新開始',()=>{u.storageWarning=clearGame(storage).warning;state=null;loaded={state:null};u.hasSave=false;u.activeStation=null;u.feedback='';sync();}]]);},
   onCommand:command
 });
 modal.addEventListener('cancel',e=>{e.preventDefault();closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.open&&state){e.preventDefault();if(u.activeStation){u.activeStation=null;sync();}else document.querySelector('#pause')?.click();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.open&&state){e.preventDefault();if(u.activeStation){const previous=u.activeStation;u.activeStation=null;sync();document.querySelector(`[data-station="${previous}"]`)?.focus({preventScroll:true});}else document.querySelector('#pause')?.click();}});
 sync();
 // 繪圖載入失敗時，工作日誌仍可獨立完成遊戲。
 async function initScene(){

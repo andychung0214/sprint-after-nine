@@ -133,7 +133,7 @@ export function createScene(container,{onStation,onUnavailable,reducedMotion}){
     return points.slice(1);
   }
   listen(window,'keydown',e=>{
-    if(!enabled||e.target.matches('input,select,textarea,button'))return;
+    if(!enabled||e.repeat||e.target.matches?.('input,select,textarea,button'))return;
     const k=e.key.toLowerCase();
     if(['w','a','s','d','arrowup','arrowleft','arrowdown','arrowright'].includes(k)){e.preventDefault();path=[];destination=null;keys.add(k);}
     if(k==='e'&&!e.repeat){const nearest=STATIONS.find(st=>Math.hypot(position.x-arrivals[st.id].x,position.z-arrivals[st.id].z)<1.35);if(nearest)onStation(nearest.id);}

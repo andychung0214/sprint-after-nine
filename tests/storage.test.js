@@ -20,6 +20,8 @@ for(const [name,change] of [
   ['minute',s=>s.minute=600.5],['history',s=>s.history=[{title:42}]],
   ['index',s=>s.eventIndex=4],['finished',s=>{s.status='ended';s.pendingEvent=s.eventDeck[0];}],
   ['meetings',s=>s.meetings={madeup:'attended'}]
+  ,['skipped future events',s=>s.eventIndex=3]
+  ,['premature event',s=>{s.eventIndex=1;s.pendingEvent=s.eventDeck[0];}]
 ])test(`invalid save rejected: ${name}`,()=>{const s=fresh();change(s);assert.equal(validateSave(s),false);});
 test('malformed and denied storage never throw or overwrite',()=>{
   let writes=0;

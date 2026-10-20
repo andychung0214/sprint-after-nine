@@ -30,3 +30,17 @@
 - 已保存桌機與手機截圖；重要文字對比介於 5.04:1 至 11.32:1。
 - Pages workflow 依官方文件使用 configure-pages v5、upload-pages-artifact v4、deploy-pages v4。
 - 尚未推送，下一步獨立審查與發布。
+
+## 獨立審查修正
+
+- 獨立審查者檢查 bc5c72d..db32d96；沒有 Critical，四項 Important 已重現並修正。
+- Final: fixed 事件存檔時序 — skipped future events / premature event RED→GREEN。
+- Final: fixed 職級數值完全相同 — role tradeoffs RED→GREEN；Senior 加入 45 分鐘整合及較高精力負荷，Manager 著重信任取捨。
+- Final: fixed 過勞不可達 — legal burnout RED→GREEN，保留三職級穩定交付路徑。
+- Final: fixed resize 後重複 keydown 恢復移動 — resize clears held keys RED→GREEN。
+- Final: Ruling: 站點 Esc 焦點遺失由 Minor 升為 Important 並修正 — 規格明訂焦點回復，鍵盤玩家會失去操作位置 — 代價為新增焦點管理；closing a station RED→GREEN。
+- 計畫核取方塊隨交付更新，無延後的程式碼審查 Minor。
+- Final: Ruling: 真實手機、Safari／Firefox、不同 GPU 與螢幕閱讀器維持未驗證標記 — 本機無對應實機環境 — 代價為這些環境仍有相容性不確定性。
+- Final: Ruling: 10–15 分鐘視為設計目標，不當成真人實測結果 — 自動操作速度不代表閱讀速度 — 代價為實際節奏仍需玩家回饋。
+- 公開 Pages 結果由發布階段繼續驗證，不將其列為免驗證項目。
+- 最終本機完整套件：npm test 30/30、npm run test:browser 15/15 通過；npm test 亦執行發布產物建構。
