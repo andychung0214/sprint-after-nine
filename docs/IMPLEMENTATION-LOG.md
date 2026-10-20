@@ -14,3 +14,7 @@
 
 ## Task 2
 - RED: storage 模組缺失。GREEN: 13/13 存檔測試通過；含 pendingEvent、非法資料、拒絕儲存與容量例外。
+
+## Task 3
+- RED: 空頁缺少角色按鈕，瀏覽器流程失敗。GREEN: 8/8 Chromium 流程通過，含三職級 18:00 結算及四尺寸。
+- Ruling: 先安裝固定版本 three.js 與 Playwright，場景於 Task 4 實作 — 依賴安裝合併減少等待 — 無產品行為影響。
