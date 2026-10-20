@@ -11,3 +11,6 @@
 ## Task 1
 - RED: 核心與內容模組不存在，2 個測試檔失敗。
 - GREEN: node --test tests/game-state.test.js tests/content.test.js，10/10 通過，含三角色完整工作日。
+
+## Task 2
+- RED: storage 模組缺失。GREEN: 13/13 存檔測試通過；含 pendingEvent、非法資料、拒絕儲存與容量例外。
