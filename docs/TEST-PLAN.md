@@ -57,4 +57,9 @@
 
 ## 發布驗證
 
-GitHub Actions 與公開 Pages URL 的結果由發布階段補記；本段不代表已部署。只在公開網址實際回應及遊戲流程通過後標示上線。
+GitHub Actions 執行 39517878994 已成功，發布程式碼 commit 為 d02468933b10f824960eedc27a1aa0097ecbc601。
+
+- 公開網址：https://andychung0214.github.io/sprint-after-nine/ ，HTTP 200。
+- 公開站 Playwright：Junior 完整 09:00–18:00 穩定交付、WebGL context loss 降級結算、觸控與減少動態效果共 3/3 通過。
+- 已在使用者 Chrome 開啟公開遊戲並檢視場景；截圖保存於 images/live.png。
+- 工作流程：https://github.com/andychung0214/sprint-after-nine/actions/runs/39517878994 。

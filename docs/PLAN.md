@@ -146,16 +146,16 @@
 - build 只複製 index.html、styles.css、src 與所需 three.js ES 模組及授權到 dist；three.js 模組以相對路徑載入。
 - Pages workflow 使用 repository 的既有認證機制；不讀取或輸出憑證。執行時核對官方 Pages 文件選定受支援的 Actions 版本。
 
-- [ ] 寫建構失敗測試：產物入口與模組齊全；沒有 node_modules、.git、測試檔或機密；以 `/sprint-after-nine/` 子路徑服務可載入。
-- [ ] 執行 `node --test tests/build.test.js`，預期因未建立建構腳本而失敗。
-- [ ] 實作白名單建構與 Pages 工作流程；預定由 main 發布及支援手動觸發，只有測試及建構通過才部署。
-- [ ] 完成全部必要文件；MIT 只涵蓋自有內容，保留 three.js 授權；記錄未使用 Blender 與 Unreal 的界線，以及雙擊 file:// 不屬於支援啟動方式。
-- [ ] 執行 `npm test`、`npm run build`、`npm run test:browser` 與子路徑測試；記錄命令、結果、截圖、日期、瀏覽器及未驗證項目，不把尺寸模擬寫成實機驗證。
-- [ ] 依 requesting-code-review 進行全分支獨立審查，修正重要問題並加入重現測試，重新執行相關測試及完整套件。
-- [ ] 依 finishing-a-development-branch 完成提交。重新檢查遠端 refs；若遠端有新內容先整合，不使用 force push。
-- [ ] 確認 main 發布分支後，在執行 git push 前顯示 origin URL、實際 branch／refspec 與完整 commit SHA；依使用者已給授權推送。
-- [ ] 透過可用 GitHub 工具啟用 Pages 的 Actions 發布來源並觸發部署；等待結果，開啟公開網址檢查 HTTP、資產及一條完整遊戲流程。
-- [ ] 若權限不足或部署失敗，保留已完成成果，回報精確阻礙；不得將預定網址當成已上線成果。
+- [x] 寫建構失敗測試：產物入口與模組齊全；沒有 node_modules、.git、測試檔或機密；以 `/sprint-after-nine/` 子路徑服務可載入。
+- [x] 執行 `node --test tests/build.test.js`，預期因未建立建構腳本而失敗。
+- [x] 實作白名單建構與 Pages 工作流程；預定由 main 發布及支援手動觸發，只有測試及建構通過才部署。
+- [x] 完成全部必要文件；MIT 只涵蓋自有內容，保留 three.js 授權；記錄未使用 Blender 與 Unreal 的界線，以及雙擊 file:// 不屬於支援啟動方式。
+- [x] 執行 `npm test`、`npm run build`、`npm run test:browser` 與子路徑測試；記錄命令、結果、截圖、日期、瀏覽器及未驗證項目，不把尺寸模擬寫成實機驗證。
+- [x] 依 requesting-code-review 進行全分支獨立審查，修正重要問題並加入重現測試，重新執行相關測試及完整套件。
+- [x] 依 finishing-a-development-branch 完成提交。重新檢查遠端 refs；若遠端有新內容先整合，不使用 force push。
+- [x] 確認 main 發布分支後，在執行 git push 前顯示 origin URL、實際 branch／refspec 與完整 commit SHA；依使用者已給授權推送。
+- [x] 透過可用 GitHub 工具啟用 Pages 的 Actions 發布來源並觸發部署；等待結果，開啟公開網址檢查 HTTP、資產及一條完整遊戲流程。
+- [x] 若權限不足或部署失敗，保留已完成成果，回報精確阻礙；不得將預定網址當成已上線成果。
 
 ## 驗收與風險
 
@@ -168,4 +168,4 @@
 - 規格第 1–5 節：Task 1；第 6 節：Task 3–4；第 7 節：Task 3–4。
 - 規格第 8–9 節：Task 1–4；第 10–12 節：Task 5 與全程證據紀錄。
 - 五項 Review Focus 均已指定測試；模組函式名稱及資料欄位保持一致。
-- Task 1–4 已完成；Task 5 本機驗證通過，等待獨立審查與公開部署驗證。
+- Task 1–5 已完成；獨立審查重要問題已修正，GitHub Pages 部署及公開網址驗證通過。

@@ -44,3 +44,11 @@
 - Final: Ruling: 10–15 分鐘視為設計目標，不當成真人實測結果 — 自動操作速度不代表閱讀速度 — 代價為實際節奏仍需玩家回饋。
 - 公開 Pages 結果由發布階段繼續驗證，不將其列為免驗證項目。
 - 最終本機完整套件：npm test 30/30、npm run test:browser 15/15 通過；npm test 亦執行發布產物建構。
+
+## 發布完成
+
+- 依使用者明確要求直接推送 main 並部署；推送前已顯示 origin、分支與 d02468933b10f824960eedc27a1aa0097ecbc601。
+- GitHub Pages Source 已設為 GitHub Actions；執行 39517878994 的 build / deploy 均 success。
+- 公開網址 HTTP 200；公開版三項瀏覽器驗證通過，包括 Junior 全工作日、場景失效降級、觸控操作。
+- 截圖 docs/images/live.png 取自公開網址；使用者 Chrome 分頁已開啟。
+- 無延後的程式碼審查 Minor。實機跨瀏覽器及真人遊玩時間仍依測試文件標記為未驗證。

@@ -2,6 +2,10 @@
 
 一間辦公室。很多種選擇。
 
+**[立即遊玩](https://andychung0214.github.io/sprint-after-nine/)**
+
+![公開遊戲畫面](docs/images/live.png)
+
 扮演 Junior、Senior 或管理階層，在 09:00–18:00 之間完成開發、會議、協作與突發事件。每次決定都在交付進度、程式碼品質、團隊信任與精力之間留下痕跡。
 
 ## 特色
@@ -77,7 +81,7 @@ npm run build
 2. 將已測試的程式碼推送 main；`.github/workflows/pages.yml` 安裝固定依賴、測試、建構及部署。
 3. 工作流程成功後，以 GitHub 回報的 Pages URL 開啟並驗證。
 
-預定網址：https://andychung0214.github.io/sprint-after-nine/ 。是否已上線以工作流程與公開網址實測為準，不以此文字推定。
+公開網址：https://andychung0214.github.io/sprint-after-nine/ 。2026-10-21 已完成部署與公開版流程驗證，詳見測試紀錄。
 
 ## 已知限制與授權
 
