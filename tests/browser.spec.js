@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';
-import {TASKS,MEETINGS} from '../src/content.js';
+import {TASKS,MEETINGS,STATIONS} from '../src/content.js';
 async function start(page,role='junior',track='frontend'){
   await page.goto('./');await page.locator(`[data-role="${role}"]`).click();
   await page.locator('#track').selectOption(track);
@@ -7,6 +7,48 @@ async function start(page,role='junior',track='frontend'){
   await page.getByRole('button',{name:'知道了，開始工作'}).click();
 }
 const saved=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('sprint-after-nine:v1')));
+test('camera controls wait for the scene module to be ready',async({page})=>{
+  let release;
+  const ready=new Promise(resolve=>{release=resolve;});
+  await page.route('**/src/scene.js',async route=>{await ready;await route.continue();});
+  await page.goto('./',{waitUntil:'domcontentloaded'});
+  const button=page.getByRole('button',{name:'拉近辦公室'});
+  try{await expect(button).toBeDisabled();}finally{release();}
+  await expect(button).toBeEnabled();await button.click();
+  await expect(page.locator('#scene')).toHaveAttribute('data-zoom','1.25');
+});
+test('expanded facilities and camera controls are usable',async({page})=>{
+  await start(page);
+  await expect(page.locator('[data-station]')).toHaveCount(9);
+  await page.getByRole('button',{name:'拉近辦公室'}).click();
+  await expect(page.locator('#scene')).toHaveAttribute('data-zoom','1.25');
+  await page.getByRole('button',{name:'辦公室全景'}).click();
+  await expect(page.locator('#scene')).toHaveAttribute('data-zoom','1.00');
+  await page.locator('[data-station="server"]').click();
+  await page.locator('[data-facility="recovery"]').click();
+  expect((await saved(page)).stats.quality).toBe(73);
+  await page.reload();await page.getByRole('button',{name:'接著上次的進度'}).click();
+  await page.locator('[data-station="server"]').click();
+  await expect(page.locator('[data-facility="recovery"]')).toBeDisabled();
+});
+test('all nine 3D markers are reachable through furniture',async({page})=>{
+  test.setTimeout(180000);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await start(page);
+  for(const station of STATIONS){
+    const point=await page.evaluate(async st=>{
+      const THREE=await import('./vendor/three.module.js');
+      const rect=document.querySelector('#scene canvas').getBoundingClientRect(),aspect=rect.width/rect.height,half=Math.max(10.8,16.2/aspect);
+      const camera=new THREE.OrthographicCamera(-half*aspect,half*aspect,half,-half,.1,100);
+      camera.position.set(13,15,17);camera.lookAt(0,0,0);camera.updateMatrixWorld();
+      const p=new THREE.Vector3(st.x,2.25,st.z).project(camera);
+      return {x:rect.x+(p.x+1)*rect.width/2,y:rect.y+(1-p.y)*rect.height/2};
+    },station);
+    await page.mouse.click(point.x,point.y);
+    await expect(page.locator(`[data-station="${station.id}"]`)).toHaveClass(/active/,{timeout:22000});
+    await page.keyboard.press('Escape');
+  }
+});
 for(const [role,track] of [['junior','frontend'],['senior','backend'],['manager','fullstack']]){
   test(`${role} complete day`,async({page})=>{
     const errors=[];page.on('pageerror',e=>errors.push(e.message));

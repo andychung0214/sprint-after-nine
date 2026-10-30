@@ -1,0 +1,30 @@
+import {chromium} from '@playwright/test';
+import {mkdir,writeFile} from 'node:fs/promises';
+const browser=await chromium.launch({args:['--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:1440,height:1000}});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto(process.env.PLAY_URL||'http://127.0.0.1:4175/');
+await page.getByRole('button',{name:'打卡，開始今天'}).click();
+await page.getByRole('button',{name:'知道了，開始工作'}).click();
+await page.waitForTimeout(1500);
+await mkdir('docs/images',{recursive:true});
+await page.screenshot({path:'docs/images/expanded-desktop.png',fullPage:true});
+const samples=await page.evaluate(()=>new Promise(resolve=>{
+  const values=[];let last=performance.now();
+  function sample(t){values.push(t-last);last=t;if(values.length<120)requestAnimationFrame(sample);else resolve(values.slice(10));}
+  requestAnimationFrame(sample);
+}));
+samples.sort((a,b)=>a-b);
+const metrics={environment:'Chromium / SwiftShader / 1440×1000 / RAF interval (not GPU FPS)',medianMs:Math.round(samples[Math.floor(samples.length*.5)]*10)/10,p95Ms:Math.round(samples[Math.floor(samples.length*.95)]*10)/10,errors};
+console.log(JSON.stringify(metrics));
+await writeFile('docs/images/animation-metrics.json',JSON.stringify(metrics,null,2)+'\n');
+await page.getByRole('button',{name:'拉近辦公室'}).click();
+await page.getByRole('button',{name:'拉近辦公室'}).click();
+await page.waitForTimeout(800);
+await page.screenshot({path:'docs/images/expanded-detail.png',fullPage:true});
+await page.setViewportSize({width:390,height:844});
+await page.getByRole('button',{name:'辦公室全景'}).click();
+await page.waitForTimeout(800);
+await page.screenshot({path:'docs/images/expanded-mobile.png',fullPage:true});
+await browser.close();
+if(errors.length)process.exitCode=1;

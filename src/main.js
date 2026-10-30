@@ -1,6 +1,6 @@
 import {createGame,transition} from './game-state.js';
 import {loadGame,saveGame,clearGame} from './storage.js';
-import {MEETINGS} from './content.js';
+import {MEETINGS,TASKS,FACILITY_ACTIONS} from './content.js';
 import {mountUI} from './ui.js';
 let storage;
 try{storage=window.localStorage;}catch{storage={getItem(){throw Error();},setItem(){throw Error();},removeItem(){throw Error();}};}
@@ -25,6 +25,7 @@ function sync(){
   ui.render(state,u);
   const mandatory=state?.pendingEvent||MEETINGS.some(m=>state&&!state.meetings[m.id]&&state.minute===m.at);
   scene?.setInputEnabled(!!state&&state.status==='playing'&&!u.paused&&!mandatory&&!u.activeStation);
+  scene?.setPaused?.(!state||state.status!=='playing'||u.paused);
   document.querySelector('#move-controls').hidden=!state||state.status!=='playing'||u.paused||!!mandatory||!!u.activeStation;
 }
 function command(c){
@@ -40,6 +41,8 @@ function command(c){
   state=r.state;u.feedback=r.reason||state.history.at(-1).title+'已記錄。';u.activeStation=null;
   const saved=saveGame(storage,state);u.storageWarning=saved.warning;loaded={state,warning:saved.warning};u.hasSave=true;
   sync();ui.announce(u.feedback);audio?.play('done');
+  const actionStation=c.type==='facility'?FACILITY_ACTIONS.find(a=>a.id===c.actionId)?.stationId:c.type==='task'?TASKS[state.role].find(a=>a.id===c.actionId)?.stationId:c.type==='meeting'?'meeting':['rest','lunch'].includes(c.type)?'pantry':null;
+  if(state.status==='playing'&&actionStation)scene?.playAction?.(actionStation);
 }
 const ui=mountUI(document.querySelector('#app'),{
   onNewGame(role,track){

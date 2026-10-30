@@ -1,4 +1,4 @@
-import {ROLES,TRACKS,STATIONS,TASKS,MEETINGS,EVENTS} from './content.js';
+import {ROLES,TRACKS,STATIONS,TASKS,MEETINGS,EVENTS,FACILITY_ACTIONS} from './content.js';
 import {getAvailableActions,getEnding} from './game-state.js';
 export const time=m=>`${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -32,7 +32,9 @@ export function mountUI(root,callbacks){
         body=`<span class="eyebrow">STATION ${st.number} / ${st.name}</span><h2>${tasks[0]?.title||st.description}</h2>`;
         if(tasks.length)body+=tasks.map(t=>`<p class="lead">${t.body}</p><p class="brief">${TRACKS[s.track].brief}<br><small>${TRACKS[s.track].detail}</small></p>${t.choices.map(c=>`<button class="choice" data-task="${t.id}" data-choice="${c.id}"><b>${c.label}</b><small>${c.minutes} 分鐘 · ${effects(c.effects)}</small></button>`).join('')}`).join('');
         else if(st.id==='pantry')body+=`<p class="lead">從螢幕抬起頭。進度不會因為一杯水消失，注意力卻會回來。</p><button class="choice" data-control="rest" aria-label="休息 15 分鐘"><b>休息 15 分鐘</b><small>精力 +18 · 時間 +15 分鐘</small></button>${s.minute>=720&&!s.lunchTaken?'<button class="choice" data-control="lunch"><b>好好吃午餐</b><small>30 分鐘 · 精力 +35 · 信任 +2</small></button>':''}`;
-        else body+=`<p class="lead">這裡暫時沒有可執行的任務。看看今天的清單，紅點標出了下一站。</p>`;
+        else body+=`<p class="lead">${FACILITY_ACTIONS.some(a=>a.stationId===st.id)?'這些額外工作會花時間，也會為今天留下不同的成果。':'這裡暫時沒有可執行的任務。看看今天的清單，紅點標出了下一站。'}</p>`;
+        const facilities=FACILITY_ACTIONS.filter(a=>a.stationId===st.id);
+        if(facilities.length)body+=`<div class="facility-actions"><h3>設施工作 · 每日一次</h3>${facilities.map(a=>{const done=s.history.some(h=>h.title===a.title);return `<button class="choice" data-facility="${a.id}" ${done?'disabled':''}><b>${done?'✓ ':''}${a.label}</b><small>${done?'今日已完成':`${a.minutes} 分鐘 · ${effects(a.effects)}`}</small></button>`;}).join('')}</div>`;
         body+='<button class="secondary" data-control="overview">回到今日清單</button>';
       }else{
         body=`<span class="eyebrow">TODAY'S FIELD NOTES</span><h2>今天，先從這裡開始。</h2><p class="lead">${ROLES[s.role].note}</p><p class="brief">${TRACKS[s.track].brief}</p><ul class="checklist">${TASKS[s.role].map(t=>`<li class="${s.completedTasks.includes(t.id)?'checked':''}">${s.completedTasks.includes(t.id)?'✓':'○'} ${t.title}</li>`).join('')}</ul><p class="lead">選擇下方有紅點的站點，或在辦公室走近後按 E。</p>`;
@@ -55,6 +57,7 @@ export function mountUI(root,callbacks){
     });
     panel.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>callbacks.onCommand({type:'task',actionId:b.dataset.task,choiceId:b.dataset.choice,expectedRevision:revision}));
     panel.querySelectorAll('[data-event]').forEach(b=>b.onclick=()=>callbacks.onCommand({type:'event',choiceId:b.dataset.event,expectedRevision:revision}));
+    panel.querySelectorAll('[data-facility]').forEach(b=>b.onclick=()=>callbacks.onCommand({type:'facility',actionId:b.dataset.facility,expectedRevision:revision}));
     panel.querySelectorAll('[data-meeting-attend],[data-meeting-skip]').forEach(b=>b.onclick=()=>callbacks.onCommand({type:'meeting',meetingId:b.dataset.meetingAttend||b.dataset.meetingSkip,choiceId:b.hasAttribute('data-meeting-attend')?'attend':'skip',expectedRevision:revision}));
     if(oldFocus)document.getElementById(oldFocus)?.focus({preventScroll:true});
   }

@@ -1,9 +1,9 @@
-import {ROLES,TRACKS,TASKS,EVENTS,MEETINGS} from './content.js';
+import {ROLES,TRACKS,TASKS,EVENTS,MEETINGS,FACILITY_ACTIONS} from './content.js';
 export const EVENT_TIMES=[630,810,990];
 export function createGame({role='junior',track='frontend',seed=Date.now()>>>0}={}){
   if(!ROLES[role]||!TRACKS[track])throw new Error('不支援的角色或方向');
   let rng=seed>>>0;
-  const deck=EVENTS.map(e=>e.id);
+  const deck=EVENTS.filter(e=>!e.followupOnly&&(!e.roles||e.roles.includes(role))).map(e=>e.id);
   for(let i=deck.length-1;i>0;i--){rng=(Math.imul(rng,1664525)+1013904223)>>>0;const j=rng%(i+1);[deck[i],deck[j]]=[deck[j],deck[i]];}
   return {version:1,revision:0,role,track,minute:540,stats:{progress:0,quality:65,trust:60,energy:85},
     completedTasks:[],meetings:{},eventDeck:deck.slice(0,3),eventIndex:0,pendingEvent:null,lunchTaken:false,seed:seed>>>0,status:'playing',history:[]};
@@ -37,6 +37,10 @@ export function transition(state,c){
       choice=event?.choices.find(o=>o.id===c.choiceId);
       if(!choice)return reject('沒有待處理事件。');
       title=event.title;
+    }else if(c.type==='facility'){
+      choice=FACILITY_ACTIONS.find(a=>a.id===c.actionId);
+      if(!choice||state.history.some(h=>h.title===choice.title))return reject('這項設施工作已完成，或不存在。');
+      title=choice.title;
     }else if(c.type==='rest'){minutes=15;effects={energy:18};title='短暫休息';result='離開螢幕，讓注意力回到自己身上。';}
     else if(c.type==='lunch'){
       if(state.minute<720||state.lunchTaken)return reject('午休還沒開始，或已經休息過了。');
@@ -53,7 +57,10 @@ export function transition(state,c){
   s.minute+=minutes;s.revision++;
   if(task)s.completedTasks.push(task.id);
   if(meeting)s.meetings[meeting.id]=c.choiceId==='attend'?'attended':'skipped';
-  if(c.type==='event')s.pendingEvent=null;
+  if(c.type==='event'){
+    s.pendingEvent=null;
+    if(choice.followup&&s.eventIndex<s.eventDeck.length&&!s.eventDeck.includes(choice.followup))s.eventDeck[s.eventIndex]=choice.followup;
+  }
   if(c.type==='lunch')s.lunchTaken=true;
   s.history.push({minute:s.minute,title,choice:choice?.label||'',result,effects:Object.fromEntries(Object.keys(s.stats).map(k=>[k,s.stats[k]-state.stats[k]]))});
   if(c.type==='finish'||s.minute>=1080||s.stats.energy===0){s.status='ended';s.pendingEvent=null;}
@@ -64,14 +71,26 @@ export function transition(state,c){
 }
 export function getEnding(s){
   const {progress:p,quality:q,trust:t,energy:e}=s.stats;
-  const id=e===0?'burnout':p>=80?(q<65?'debt':t<50?'isolated':'steady'):t>=65?'negotiated':'unfinished';
+  let id=e===0?'burnout':p>=80?(q<65?'debt':t<50?'isolated':'steady'):t>=65?'negotiated':'unfinished';
+  // 核心交付與風險先判定；有完成交付才依今日最後一項專長選擇分支。
+  if(id==='steady'){
+    const specialties={recovery:['guardian',q>=80],pairing:['mentor',t>=75],handover:['bridge',t>=75],
+      'scope-plan':['strategist',t>=80],experiment:['inventor',q>=85],unplug:['balanced',e>=60]};
+    for(const h of s.history){const a=FACILITY_ACTIONS.find(a=>a.title===h.title);if(a&&specialties[a.id][1])id=specialties[a.id][0];}
+  }
   const endings={
     burnout:['過勞收場','工作還在，但你需要先休息。明天的自己也值得被照顧。'],
     steady:['穩定交付','功能交出去了，品質與夥伴也一起帶到了終點。準時下班，是一種專業。'],
     debt:['技術債留到明天','進度完成了。那些略過的驗證，已經在明天的清單上。'],
     isolated:['交付完成，合作失溫','成果到位了。下一次，也留一點時間給一起工作的人。'],
     negotiated:['誠實協商，明天再戰','還有沒做完的事，但團隊知道原因，也知道下一步。'],
-    unfinished:['帶著未完清單下班','今天沒有解完每道題。把卡住的地方寫下來，明天從那裡開始。']
+    unfinished:['帶著未完清單下班','今天沒有解完每道題。把卡住的地方寫下來，明天從那裡開始。'],
+    guardian:['可靠性的守門人','交付完成，復原路徑也經過演練。你為明天可能發生的意外留了一條路。'],
+    mentor:['讓同事也能前進','自己的工作完成了，同事也找到了方法。你留下的不只是答案。'],
+    bridge:['交接的橋梁','成果與操作知識一起交付，接手的人不再需要猜。'],
+    strategist:['有取捨的承諾','團隊知道什麼現在做、什麼稍後做。清楚的範圍成了可靠交付的起點。'],
+    inventor:['有證據的探索','原型驗證了假設，測試守住了品質。今天的新點子有了可重現的根據。'],
+    balanced:['留有餘裕的下班','工作交出去了，你也有精力走進自己的生活。明天不必靠透支今天開始。']
   };
   return {id,title:endings[id][0],summary:endings[id][1]};
 }

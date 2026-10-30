@@ -63,3 +63,15 @@ GitHub Actions 執行 39517878994 已成功，發布程式碼 commit 為 d024689
 - 公開站 Playwright：Junior 完整 09:00–18:00 穩定交付、WebGL context loss 降級結算、觸控與減少動態效果共 3/3 通過。
 - 已在使用者 Chrome 開啟公開遊戲並檢視場景；截圖保存於 images/live.png。
 - 工作流程：https://github.com/andychung0214/sprint-after-nine/actions/runs/39517878994 。
+
+
+## 2026-10-31 擴建回歸
+
+- `npm test`：38/38，含 24 事件、角色篩選、事故後續、設施重複限制、合法六條新結局、存檔往返、轉身插值及桌後狹窄走道。
+- 完整 Playwright：17/17，三職級完整一天、九個 3D 標牌逐一繞路抵達、縮放、新設施重載、四種尺寸、觸控、WebGL 降級與鍵盤焦點。
+- 第一次瀏覽器回歸有 Senior 超時；材質與繪圖優化後全套重跑通過。
+- 實際檢視 expanded-desktop.png、expanded-detail.png、expanded-mobile.png；九個區域、家具與鏡頭按鈕可辨識，手機站點列水平捲動。
+- `node scripts/inspect-office.mjs` 可重新產生畫面與 RAF 更新間隔。取樣環境 Chromium SwiftShader、1440×1000；中位數 33.3ms、p95 50ms，無 pageerror。這是軟體繪圖與系統負載下的 RAF 取樣，不是一般 GPU FPS 保證。
+- 真實手機、Safari／Firefox、不同實體 GPU 與螢幕閱讀器仍未驗證。
+
+- 建構產物 `/sprint-after-nine/` 子路徑：九個標牌逐一抵達；另 4/4 測試通過（延遲載入鏡頭、縮放與設施、WebGL 降級、觸控）。新增延遲載入案例後共有 18 個瀏覽器案例，CI 發布前會再跑完整套件。

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {TASKS,EVENTS,TRACKS,MEETINGS} from '../src/content.js';
-test('three distinct role chains and six complete events',()=>{
+test('three distinct role chains and 24 complete events',()=>{
   assert.equal(Object.keys(TASKS).length,3);
   for(const tasks of Object.values(TASKS)){
     assert.equal(tasks.length,4);
@@ -10,8 +10,8 @@ test('three distinct role chains and six complete events',()=>{
       for(const c of t.choices)assert.ok([15,30,45].includes(c.minutes));
     });
   }
-  assert.equal(EVENTS.length,6);
-  assert.equal(new Set(EVENTS.map(e=>e.id)).size,6);
+  assert.equal(EVENTS.length,24);
+  assert.equal(new Set(EVENTS.map(e=>e.id)).size,24);
   assert.equal(Object.keys(TRACKS).length,3);
   assert.deepEqual(MEETINGS.map(m=>[m.at,m.minutes]),[[570,15],[660,30],[900,30]]);
 });

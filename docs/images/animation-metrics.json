@@ -1,0 +1,6 @@
+{
+  "environment": "Chromium / SwiftShader / 1440×1000 / RAF interval (not GPU FPS)",
+  "medianMs": 33.3,
+  "p95Ms": 50,
+  "errors": []
+}

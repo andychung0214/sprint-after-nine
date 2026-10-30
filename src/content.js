@@ -13,7 +13,20 @@ export const STATIONS = [
   {id:'whiteboard',name:'協作白板',short:'釐清',number:'02',x:0,z:-2.8,description:'先把問題問對，再開始解。'},
   {id:'meeting',name:'會議室',short:'對齊',number:'03',x:4,z:-1.8,description:'說進度，也說卡住的地方。'},
   {id:'test',name:'測試工作站',short:'驗證',number:'04',x:3.5,z:2,description:'「在我電腦可以」還不算完成。'},
-  {id:'pantry',name:'茶水間',short:'喘口氣',number:'05',x:-4,z:-2.6,description:'咖啡不會修好錯誤，休息可能會。'}
+  {id:'pantry',name:'茶水間',short:'喘口氣',number:'05',x:-4,z:-2.6,description:'咖啡不會修好錯誤，休息可能會。'},
+  {id:'reception',name:'接待區',short:'交接',number:'06',x:-8,z:3,description:'讓資訊有去處，讓交接有接手的人。'},
+  {id:'server',name:'機房',short:'可靠性',number:'07',x:8,z:-3,description:'備份不是有檔案就好，還要真的還原得回來。'},
+  {id:'lounge',name:'休息區',short:'交流',number:'08',x:-7.8,z:-3.7,description:'有些問題，離開座位才能想清楚。'},
+  {id:'manager',name:'主管室',short:'取捨',number:'09',x:8,z:3,description:'把不能同時完成的事，說清楚。'}
+];
+// 每項一天一次，避免反覆使用設施刷取品質與信任。
+export const FACILITY_ACTIONS = [
+  {id:'recovery',stationId:'server',title:'驗證備份還原',label:'在隔離環境演練還原',minutes:15,effects:{quality:8,energy:-6},result:'還原成功，復原步驟與耗時都已記錄。'},
+  {id:'experiment',stationId:'server',title:'隔離環境實驗',label:'用小型原型驗證技術假設',minutes:30,effects:{quality:10,energy:-10},result:'原型回答了問題，正式環境沒有被當成實驗室。'},
+  {id:'handover',stationId:'reception',title:'跨組交接',label:'核對窗口、操作文件與聯絡方式',minutes:15,effects:{trust:8,energy:-4},result:'下一個接手的人，不必從猜測開始。'},
+  {id:'pairing',stationId:'lounge',title:'陪同事拆解難題',label:'一起畫出問題與最小重現步驟',minutes:15,effects:{trust:9,quality:3,energy:-6},result:'你沒有代寫答案，對方已能自己繼續往下走。'},
+  {id:'unplug',stationId:'lounge',title:'離線伸展',label:'放下手機，伸展與看窗外',minutes:15,effects:{energy:22},result:'不是每個空檔都需要填滿。注意力回來了。'},
+  {id:'scope-plan',stationId:'manager',title:'重整交付範圍',label:'寫下必做、延後與風險負責人',minutes:30,effects:{trust:10,quality:4,energy:-6},result:'取捨留下了紀錄，團隊知道哪些承諾是真的。'}
 ];
 const workloads = {
   junior:{minutes:[30,30,30,30],quality:8,trust:4,energy:15,quickQuality:-13,quickTrust:-4},
@@ -58,8 +71,37 @@ export const EVENTS = [
   ['merge','合併衝突','你與同事都動到同一段邏輯。選擇保留自己的版本很快，但未必正確。','一起確認兩邊的意圖','全部採用自己的版本'],
   ['incident','正式環境警報','監控突然亮起。訊息一條接一條，而根因還不明確。','先止血、同步資訊再排查','直接改正式環境碰碰運氣'],
   ['help','同事正在卡關','隔壁的同事已經盯著同一個錯誤半小時。你也有自己的期限。','一起看最小重現範例','丟一個搜尋連結就離開'],
-  ['spec','規格的空白處','SA 文件沒有提到取消流程。畫面與 API 正朝兩個方向前進。','補上流程與共同驗收','各自做完再說']
+  ['spec','規格的空白處','SA 文件沒有提到取消流程。畫面與 API 正朝兩個方向前進。','補上流程與共同驗收','各自做完再說'],
+  ['pipeline','建構管線紅燈','隔離測試通過，整合階段卻失敗了。','檢查相依與環境差異','停用失敗測試'],
+  ['access','權限突然失效','測試帳號無法進入需要驗收的環境。','找窗口申請最小權限','先借同事帳號'],
+  ['design','設計稿更新','設計師補上空白狀態，舊畫面還沒完成。','確認版本並更新驗收','忽略這次修改'],
+  ['slow','回應變慢了','列表頁載入時間從一秒變成五秒。','量測瓶頸並建立基準','先加載入動畫'],
+  ['dependency','套件更新通知','共用套件發布修正，但升級會改變介面。','查看差異並跑相容測試','不看變更直接升級'],
+  ['keyboard','鍵盤走不出去','QA 只用鍵盤操作，焦點被卡在選單。','修正焦點順序與離開方式','請使用者改用滑鼠'],
+  ['restore','備份演練通知','維運想確認昨晚的備份能不能還原。','在隔離環境驗證復原','看到檔案存在就簽名'],
+  ['network','公司網路斷線','套件下載與遠端會議一起中斷。','轉做離線文件並回報','一直重按重新整理'],
+  ['demo','臨時展示邀請','業務希望立刻展示還沒驗收的功能。','說明限制並用測試資料','直接打開正式資料'],
+  ['estimate','估時被打了折','會議紀錄中的三天變成一天。','拆解工作與驗收重新確認','默默接受期限'],
+  ['review','第一份審查回覆','審查留言比程式碼還長，你有點不知所措。','整理問題請同事說明原因','全部照改不問原因'],
+  ['architecture','架構分歧','兩組團隊想用不同的狀態格式。','寫決策紀錄與遷移路徑','讓各組自行決定'],
+  ['capacity','團隊容量不足','同事臨時請假，原定承諾不可能全部完成。','協商減少範圍並保護團隊','把工作平均塞回其他人'],
+  ['timezone','日期少了一天','海外測試帳號看見錯誤的訂單日期。','補時區測試並確認契約','畫面手動加一天'],
+  ['onboarding','新人找不到環境文件','新人安裝三次都卡在同一個步驟。','一起修正初始化文件','傳一份自己的壓縮檔'],
+  ['printer','列印室的小事故','需求討論前，印表機吃掉最後一張流程圖。','改用共享白板核對版本','拿上週的紙本直接開會'],
+  ['incident-followup','事故再度響起','剛才的快速修改讓另一條路徑失效。這次需要可回復的處理。','回復版本並補事故紀錄','再疊一個臨時修補'],
+  ['scope-followup','承諾的回音','早上的插單沒有移除任何範圍，兩邊都在追進度。','公開風險並重新協商','繼續承諾全部交付']
 ].map(([id,title,body,careful,quick])=>({id,title,body,choices:[
   {id:'careful',label:careful,minutes:15,effects:{quality:4,trust:6,energy:-7},result:'問題有了主人，也有了下一步。'},
   {id:'quick',label:quick,minutes:15,effects:{quality:-12,trust:-9,energy:-4},result:'現在安靜了，事情卻還沒有真正結束。'}
 ]}));
+for(const event of EVENTS){
+  if(event.id==='review')event.roles=['junior'];
+  if(event.id==='architecture')event.roles=['senior'];
+  if(event.id==='capacity')event.roles=['manager'];
+  if(event.id.endsWith('-followup'))event.followupOnly=true;
+  if(['incident','scope'].includes(event.id))event.choices[1].followup=`${event.id}-followup`;
+  // 延續事件具有不同代價；其餘類別也有各自的資源取捨。
+  if(event.followupOnly){event.choices[0].effects={quality:6,trust:3,energy:-10};event.choices[1].effects={quality:-16,trust:-12,energy:-6};}
+  else if(['help','onboarding','capacity','estimate'].includes(event.id))event.choices[0].effects={quality:2,trust:9,energy:-7};
+  else if(['restore','pipeline','keyboard','timezone','slow'].includes(event.id))event.choices[0].effects={quality:7,trust:3,energy:-7};
+}
